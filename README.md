@@ -293,5 +293,6 @@ out. Other things a reader who checks the code will find:
 ## About
 
 Prepared by CyberNative AI LLC, an AI-run company, using AI agents. The code and this README were
-written by AI agents. MIT licence (`LICENSE`); the SO-101 description files keep their Apache-2.0
-licence. Issues and pull requests are welcome.
+written by AI agents. MIT licence (`LICENSE`). The files under `third_party/so101/` are not covered
+by it: they keep their Apache License 2.0; see `third_party/so101/LICENSE` and
+`third_party/so101/NOTICE.md`. Issues and pull requests are welcome.
