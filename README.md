@@ -6,7 +6,8 @@ fault into a running cell (wire, forged and malformed commands, model errors, st
 dead and hung processes, bad updates, broken sensors, stalled motors, mechanical drift) and counts,
 on the same cycles, three things:
 
-- **failures caught**: parts that did not seat and that the checks flagged;
+- **failures caught**: parts that did not seat, would not have seated with no checks either, and
+  that the checks flagged;
 - **silent failures**: parts that did not seat and that nobody flagged;
 - **good cycles stopped**: parts that seated, or would have, that the checks flagged anyway.
 
@@ -29,12 +30,13 @@ git clone https://github.com/CyberNative-AI/cell-fault-bench
 cd cell-fault-bench
 python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
-python3 -m unittest discover -s tests                # 55 tests, about 80 s
+python3 -m unittest discover -s tests
 OMP_NUM_THREADS=1 python3 -m cellrt.campaign --procs 5 --out results/model-c3
 ```
 
-The campaign prints the unit seeds, the cycle count and two tables when it finishes, and writes
-`results/model-c3/campaign.json`. On our host (5 processes) it took 731 s. Add `--quick` for a
+The test suite has 55 tests and took about 80 s on our host. The campaign prints the unit seeds,
+the cycle count and two tables when it finishes, and writes `results/model-c3/campaign.json`. On
+our host (5 processes) it took 731 s. Add `--quick` for a
 one-minute run on 4 units. `python3 -m cellrt.scorecard results/model-c3/campaign.json --by-class`
 prints one row per fault class from the saved file.
 
@@ -85,7 +87,9 @@ a seated part, which sends a good part to the reject place.
   acceptance.** With a sensor that reads "seated" on 1% of unseated parts the checks caught 1,178 of
   1,195 failures; at 5%, 1,142. Software neither adds to that nor repairs it. The number to go and
   measure is your sensor's, on your fixture.
-- **Two simulated arm profiles built from public recordings gave the same counts.** `cellsim/arms.py`
+- **Two simulated arm profiles built from public recordings gave the same result: no silent failure
+  and no untouched good cycle stopped.** They fail far more placements than the model arm: 60,900
+  (p50, 3 mm) and 139,224 (p90, 5 mm) of 394,000 fault cycles, against 7,003. `cellsim/arms.py`
   sets each joint's play and settle scatter to that joint's own median ("p50") or its own 90th
   percentile ("p90") in the `joints` table of the public
   [holdcheck corpus summary](https://github.com/CyberNative-AI/holdcheck/blob/be1ebd42/holdcheck/corpus_summary.json).
